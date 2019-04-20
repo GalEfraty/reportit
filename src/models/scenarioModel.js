@@ -11,7 +11,7 @@ const ScenarioSchema = mongoose.Schema({
         type:[String],
         required: true
     } 
-})
+}, {timestamps: true})
 
 const Scenario = mongoose.model('Scenario', ScenarioSchema)
 

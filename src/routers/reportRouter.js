@@ -1,29 +1,141 @@
 const express = require('express')
 const Report = require('../models/reportModel')
+const multer = require('multer')
+const sharp = require('sharp')
+
+const emailSender = require('../utils/emailSender')
+const municipalFinder = require('../utils/municipalFinder')
+const googleVisionLabelDetector = require('../utils/googleVisionLabelDetector')
+const scenarioFinder = require('../utils/scenarioFinder')
+const authorityFinder = require('../utils/authorityFinder')
 const reportsBuilder = require('../utils/reportsBuilder')
+
 
 //allowing seperate files for each api route (so index.js wont look too long and messy)
 const router = new express.Router()
 
-//post: create new report
-//*****TODO INSIDE X2******//
+
+
+//post: create new report - REQ01
+
 router.post('/reports/create', async (req, res) => 
 {
-    /*------TODO: the method reportsBuilder.build is not completed ------*/
     try {
-        const report = await reportsBuilder.build(req.body)
+        //const report = await reportsBuilder.build(req.params, req)
+
+        var report = new Report()
+
+        report.reportAuthorityFull="test1_test"
+
+        report.reporterName = req.body.reporterName
+        report.reporterPhone = req.body.reporterPhone
+        report.reporterEmail = req.body.reporterEmail
+        report.reportLocation = req.body.reportLocation
+        report.reportStatus = "in process of creating report"
+
+        const reportMunicipalName = await municipalFinder.getMunicipalName(req.body.reportLocation.latitude, req.body.reportLocation.longitude)
+        report.reportMunicipalName = await reportMunicipalName.municipalName
 
         await report.save()
         res.status(201).send({
             message: `Report created succesfully`,
             report: report})
 
-        //--TODO: send Email to the citizen with all the details.
-         
      } catch (error) {
          console.log('Error in create report: ', error)
         res.status(400).send(error)
      }
+})
+
+//create a multer instance and middlewere to allow and control file upload
+const upload = multer({
+    limits: {fileSize: 1500000}, //1.5 mb
+    fileFilter(req, file, cb)
+    {
+        if(!(file.originalname.endsWith('jpg') || file.originalname.endsWith('jpeg') || file.originalname.endsWith('png')))
+        {
+            return cb(new Error('Please upload an image'), false)
+        }
+        return cb(undefined, true)
+    }  
+})
+router.post('/reports/create/uploadPicture/:id', upload.single('reportpicture'), async (req, res) =>
+{
+    try {
+        const report = await Report.findById(req.params.id)
+        if(!report){
+            throw Error('no report found')
+        }
+        if(!req.file){
+            throw Error('no image found')
+        }
+
+        const buffer = await sharp(req.file.buffer).resize({width: 250, height: 250}).png().toBuffer()
+        report.reportPicture = await buffer
+
+    
+        const labels = await googleVisionLabelDetector.getLabels(req.file.buffer)
+        
+        //console.log(labels)
+
+
+            //do the manipulations (getScenario, gatAuthority, getAuthorityFull, sendEmail)
+        await report.save()
+        res.send({message: 'success', report, labels})
+
+    } catch (error) {
+        res.status(400).send({error: error})
+    }
+
+}, (error, req, res, next) =>{
+    res.status(400).send({error: error.message})
+})
+
+
+//NOT IN USE:
+router.post('/reports/create/uploadPictur/:id', async (req, res) => {
+    try {
+        const report = Report.findById(req.params.id)
+
+        // if(!report || !req.params.file){
+        //     throw Error('report not found/ no image')
+        // }
+        console.log(rreport.reportAuthorityFull)
+
+        console.log(req.body.reportAuthorityFull)
+        //const reportPictureBuffer = await sharp(req.file.buffer).png().toBuffer()
+    
+        //report.reportPivture = reportPictureBuffer
+        report.reportAuthorityFull = req.body.reportAuthorityFull
+        await report.save()
+        res.send(report)
+    
+    } catch (error) {
+        res.send(error.message)
+    }
+
+    //const labels = await googleVisionLabelDetector.getLabels(reportPictureBuffer)
+    //const reportScenario = await scenarioFinder.getScenario(labels) 
+    //const reportAuthorityType = await authorityFinder.getAuthorityType(reportScenario)
+    //const reportAuthorityFull = await `${reportAuthorityType}_${report.reportMunicipalName}`
+
+
+    //report.reportAuthorityType = reportAuthorityType 
+    //report.reportAuthorityFull = reportAuthorityFull
+    //report.reportScenario = reportScenario
+
+    // try {
+    //     //report.save()
+    //     //emailSender.sendReportMail(report)
+    //     report.reportStatus = "created"
+    //     res.status(201).send(report)
+    // } catch (error) {
+    //     res.status(500).send({error: error.message})
+    // }
+
+
+// },  (error, req, res, next) =>{
+//     res.status(400).send({error: error.message})
 })
 
 //get all Reports
@@ -77,7 +189,7 @@ router.get('/reports/byauthorityintimerange/:reportAuthorityFull/:timefrom/:time
     try {
         const reports = await Report.find({
             reportAuthorityFull: reportAuthorityFull,
-             reportTime:{
+            createdAt:{
                 $gte: timefrom,
                 $lte: timeto
             }})

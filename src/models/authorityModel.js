@@ -11,7 +11,7 @@ const AuthoritySchema = mongoose.Schema({
         type:[String],
         required: true
     }
-})
+}, {timestamps: true})
 
 const Authority = mongoose.model('Authority', AuthoritySchema)
 

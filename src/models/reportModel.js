@@ -40,7 +40,6 @@ const reportSchema = mongoose.Schema({
 
     //--TODO inside nice to have
     reportAuthorityType:{
-        required: true,
         type: String,
         //TODO: validate if the authority exist in db bu find. if not, Error
     },
@@ -52,7 +51,6 @@ const reportSchema = mongoose.Schema({
     }, 
 
     reportAuthorityFull: {
-        required: true,
         type: String,
         validate(value){
             if(!value.includes('_'))
@@ -64,7 +62,6 @@ const reportSchema = mongoose.Schema({
 
     //--TODO inside nice to have
     reportScenario: {
-        required: true,
         type: String
         //TODO: validate:: if the Scenario exist in db. if not, Error
     }, 
@@ -75,18 +72,10 @@ const reportSchema = mongoose.Schema({
         default: 'wait for authority'
     }, 
 
-    //--TODO inside - must!!!!!
     reportPicture: {
-        type: String,
-        required: true
-        /*TODO: understand how to save the picture */
+        type: Buffer
     }, 
-
-    reportTime: {
-        required: true,
-        type: Number,
-    } 
-})
+}, {timestamps: true})
 
 const Report = mongoose.model('Report', reportSchema)
 

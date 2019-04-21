@@ -26,7 +26,7 @@ const getLabels = async function(i_Path)
         let stringLabels = []
         
         // Creates a client
-        const client = new vision.ImageAnnotatorClient(googleAuthenticationJsonFile);
+        const client = new vision.ImageAnnotatorClient(googleAuthenticationObject);
         
         // Performs label detection on the image file
         client

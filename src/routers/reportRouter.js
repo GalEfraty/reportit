@@ -75,12 +75,18 @@ router.post('/reports/create/uploadPicture/:id', upload.single('reportpicture'),
 
     
         const labels = await googleVisionLabelDetector.getLabels(req.file.buffer)
-        
-        //console.log(labels)
+        //const reportScenario = await scenarioFinder.getScenario(labels)         
+        //const reportAuthorityType = await authorityFinder.getAuthorityType(reportScenario)
+        //const reportAuthorityFull = await `${reportAuthorityType}_${report.reportMunicipalName}`
 
 
-            //do the manipulations (getScenario, gatAuthority, getAuthorityFull, sendEmail)
+        //report.reportAuthorityType = reportAuthorityType 
+        //report.reportAuthorityFull = reportAuthorityFull
+        //report.reportScenario = reportScenario
         await report.save()
+
+        //emailSender.sendReportMail(report)
+        //report.reportStatus = "created"
         res.send({message: 'success', report, labels})
 
     } catch (error) {

@@ -10,7 +10,8 @@ const sendReportMail = (i_Report) =>
         from: 'reports@report.it',
         subject: 'New report',
         text: `Hello ${i_Report.reporterName}, thank you for your report.\n
-        report details: ...`
+        report details: \n
+        we recognized that you have reported: `
     })
 }
 

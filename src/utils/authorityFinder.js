@@ -1,9 +1,24 @@
+const Authority = require('../models/authorityModel')
 
-const getAuthorityType = (reportScenario) =>
+const getAuthorityType = (i_ReportScenario) =>
 {
-    return new Promise((resolve, reject) => 
+    return new Promise(async (resolve, reject) => 
     {
-        resolve('demoAuthorityType')
+        try {
+            const allAuthorities = await Authority.find({})
+            let matchAuthorities = await allAuthorities.filter(authority => authority.scenarios.includes(i_ReportScenario))
+
+    
+            if(!matchAuthorities)
+            {
+                reject('Unable to find authority')
+            }
+    
+            resolve(matchAuthorities[0].authorityType)
+        } catch (error) {
+            reject(error)
+        }
+
     })
 }
 

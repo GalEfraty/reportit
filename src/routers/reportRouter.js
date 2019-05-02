@@ -31,7 +31,7 @@ router.post('/reports/create', async (req, res) =>
         report.reporterPhone = req.body.reporterPhone
         report.reporterEmail = req.body.reporterEmail
         report.reportLocation = req.body.reportLocation
-        report.reportStatus = "in process of creating report"
+        report.reportStatus = "creating"
 
         const reportMunicipalName = await municipalFinder.getMunicipalName(req.body.reportLocation.latitude, req.body.reportLocation.longitude)
         report.reportMunicipalName = await reportMunicipalName.municipalName
@@ -75,18 +75,25 @@ router.post('/reports/create/uploadPicture/:id', upload.single('reportpicture'),
 
     
         const labels = await googleVisionLabelDetector.getLabels(req.file.buffer)
-        //const reportScenario = await scenarioFinder.getScenario(labels)         
-        //const reportAuthorityType = await authorityFinder.getAuthorityType(reportScenario)
-        //const reportAuthorityFull = await `${reportAuthorityType}_${report.reportMunicipalName}`
+        const reportScenario = await scenarioFinder.getScenario(labels) 
+        
+        
+        const reportAuthorityType = await authorityFinder.getAuthorityType(reportScenario)
+        const reportAuthorityFull = await `${reportAuthorityType}_${report.reportMunicipalName}`
+        await console.log(reportAuthorityFull)
 
 
-        //report.reportAuthorityType = reportAuthorityType 
-        //report.reportAuthorityFull = reportAuthorityFull
-        //report.reportScenario = reportScenario
+        report.reportAuthorityType = await reportAuthorityType 
+        report.reportAuthorityFull = await reportAuthorityFull
+        report.reportScenario = await reportScenario
         await report.save()
 
-        //emailSender.sendReportMail(report)
-        //report.reportStatus = "created"
+        if(report.reporterEmail)
+        {
+            emailSender.sendReportMail(report)
+        }
+
+        report.reportStatus = "created"
         res.send({message: 'success', report, labels})
 
     } catch (error) {
@@ -97,58 +104,11 @@ router.post('/reports/create/uploadPicture/:id', upload.single('reportpicture'),
     res.status(400).send({error: error.message})
 })
 
-
-//NOT IN USE:
-router.post('/reports/create/uploadPictur/:id', async (req, res) => {
-    try {
-        const report = Report.findById(req.params.id)
-
-        // if(!report || !req.params.file){
-        //     throw Error('report not found/ no image')
-        // }
-        console.log(rreport.reportAuthorityFull)
-
-        console.log(req.body.reportAuthorityFull)
-        //const reportPictureBuffer = await sharp(req.file.buffer).png().toBuffer()
-    
-        //report.reportPivture = reportPictureBuffer
-        report.reportAuthorityFull = req.body.reportAuthorityFull
-        await report.save()
-        res.send(report)
-    
-    } catch (error) {
-        res.send(error.message)
-    }
-
-    //const labels = await googleVisionLabelDetector.getLabels(reportPictureBuffer)
-    //const reportScenario = await scenarioFinder.getScenario(labels) 
-    //const reportAuthorityType = await authorityFinder.getAuthorityType(reportScenario)
-    //const reportAuthorityFull = await `${reportAuthorityType}_${report.reportMunicipalName}`
-
-
-    //report.reportAuthorityType = reportAuthorityType 
-    //report.reportAuthorityFull = reportAuthorityFull
-    //report.reportScenario = reportScenario
-
-    // try {
-    //     //report.save()
-    //     //emailSender.sendReportMail(report)
-    //     report.reportStatus = "created"
-    //     res.status(201).send(report)
-    // } catch (error) {
-    //     res.status(500).send({error: error.message})
-    // }
-
-
-// },  (error, req, res, next) =>{
-//     res.status(400).send({error: error.message})
-})
-
 //get all Reports
 router.get('/reports/all', async (req, res) => 
 {
     try {
-        const reports = await Report.find({})
+        const reports = await Report.find({reportStatus : {$ne: 'creating'}})
         res.send({
             message: `found ${reports.length} reports`,
             reports: reports})
@@ -178,7 +138,7 @@ router.get('/reports/byauthority/:reportAuthorityFull', async (req, res) =>
 {
     const reportAuthorityFull = req.params.reportAuthorityFull
     try {
-        const reports = await Report.find({reportAuthorityFull})
+        const reports = await Report.find({reportStatus : {$ne: 'creating'}, reportAuthorityFull})
         res.send({message: `found ${reports.length} reports for ${reportAuthorityFull}`, reports: reports})
     } catch (error) {
         res.status(500).send(error)
@@ -194,6 +154,7 @@ router.get('/reports/byauthorityintimerange/:reportAuthorityFull/:timefrom/:time
 
     try {
         const reports = await Report.find({
+            reportStatus : {$ne: 'creating'},
             reportAuthorityFull: reportAuthorityFull,
             createdAt:{
                 $gte: timefrom,

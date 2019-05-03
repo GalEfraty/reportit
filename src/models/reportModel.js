@@ -38,9 +38,8 @@ const reportSchema = mongoose.Schema({
         }
     }, 
 
-    //--TODO inside nice to have
-    reportAuthorityType:{
-        type: String,
+    reportAuthorityTypes:{
+        type: [String],
         //TODO: validate if the authority exist in db bu find. if not, Error
     },
 
@@ -50,26 +49,30 @@ const reportSchema = mongoose.Schema({
         trim: true
     }, 
 
-    reportAuthorityFull: {
-        type: String,
-        validate(value){
-            if(!value.includes('_'))
+    reportAuthoritiesFull: {
+        type: [String],
+        validate(value)
+        {
+            value.forEach((element) => 
             {
-                throw Error('reportAuthorityFull must be formated like: authorityType_municipalName')
-            }
+                if(!element.includes('_'))
+                {
+                    throw Error('reportAuthorityFull must be formated like: authorityType_municipalName')
+                }
+            });
         }
     }, 
 
     //--TODO inside nice to have
-    reportScenario: {
-        type: String
+    reportScenarios: {
+        type: [String]
         //TODO: validate:: if the Scenario exist in db. if not, Error
     }, 
 
     reportStatus:{
         required: true,
         type: String,
-        default: 'wait for authority'
+        default: 'No Status'
     }, 
 
     reportPicture: {

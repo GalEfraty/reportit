@@ -6,14 +6,12 @@ const sharp = require('sharp')
 const emailSender = require('../utils/emailSender')
 const municipalFinder = require('../utils/municipalFinder')
 const googleVisionLabelDetector = require('../utils/googleVisionLabelDetector')
-const scenarioFinder = require('../utils/scenarioFinder')
-const authorityFinder = require('../utils/authorityFinder')
-const reportsBuilder = require('../utils/reportsBuilder')
+const scenariosFinder = require('../utils/scenariosFinder')
+const authoritiesFinder = require('../utils/authoritiesFinder')
 
 
 //allowing seperate files for each api route (so index.js wont look too long and messy)
 const router = new express.Router()
-
 
 
 //post: create new report - REQ01
@@ -24,8 +22,6 @@ router.post('/reports/create', async (req, res) =>
         //const report = await reportsBuilder.build(req.params, req)
 
         var report = new Report()
-
-        report.reportAuthorityFull="test1_test"
 
         report.reporterName = req.body.reporterName
         report.reporterPhone = req.body.reporterPhone
@@ -59,6 +55,7 @@ const upload = multer({
         return cb(undefined, true)
     }  
 })
+
 router.post('/reports/create/uploadPicture/:id', upload.single('reportpicture'), async (req, res) =>
 {
     try {
@@ -73,28 +70,24 @@ router.post('/reports/create/uploadPicture/:id', upload.single('reportpicture'),
         const buffer = await sharp(req.file.buffer).resize({width: 250, height: 250}).png().toBuffer()
         report.reportPicture = await buffer
 
-    
-        const labels = await googleVisionLabelDetector.getLabels(req.file.buffer)
-        const reportScenario = await scenarioFinder.getScenario(labels) 
+        const labels = await googleVisionLabelDetector.getLabels(req.file.buffer) //labels = ['str']
+        const reportScenarios = await scenariosFinder.getScenarios(labels) //reportScenarios =['str']
         
-        
-        const reportAuthorityType = await authorityFinder.getAuthorityType(reportScenario)
-        const reportAuthorityFull = await `${reportAuthorityType}_${report.reportMunicipalName}`
-        await console.log(reportAuthorityFull)
+        const reportAuthorityTypes = await authoritiesFinder.getAuthorityTypes(reportScenarios) //reportAuthorityTypes = ['str']
+        const reportAuthoritiesFull = await authoritiesFinder.getAuthoritiesFull(report.reportMunicipalName, reportAuthorityTypes) //reportAuthoritiesFull = ['str']
 
-
-        report.reportAuthorityType = await reportAuthorityType 
-        report.reportAuthorityFull = await reportAuthorityFull
-        report.reportScenario = await reportScenario
-        await report.save()
+        report.reportAuthorityTypes = await reportAuthorityTypes 
+        report.reportAuthoritiesFull = await reportAuthoritiesFull
+        report.reportScenarios = await reportScenarios
+        report.reportStatus = await "created"
 
         if(report.reporterEmail)
         {
             emailSender.sendReportMail(report)
         }
 
-        report.reportStatus = "created"
-        res.send({message: 'success', report, labels})
+        report.save()
+        res.send({message: 'success', report})
 
     } catch (error) {
         res.status(400).send({error: error})
@@ -134,11 +127,17 @@ router.get('/reports/:id', async (req, res) =>
 })
 
 //get all Reports for authorityFull
+///:reportAuthorityFull
 router.get('/reports/byauthority/:reportAuthorityFull', async (req, res) => 
 {
     const reportAuthorityFull = req.params.reportAuthorityFull
+
     try {
-        const reports = await Report.find({reportStatus : {$ne: 'creating'}, reportAuthorityFull})
+        const reports = await Report.find({
+            //NOT WORKING!! NEED TO FIX!
+            reportAuthoritiesFull: reportAuthorityFull, //only reports that reportAuthorityFull include the parameter!
+            reportStatus : {$ne: 'creating'}
+        })
         res.send({message: `found ${reports.length} reports for ${reportAuthorityFull}`, reports: reports})
     } catch (error) {
         res.status(500).send(error)
@@ -155,7 +154,7 @@ router.get('/reports/byauthorityintimerange/:reportAuthorityFull/:timefrom/:time
     try {
         const reports = await Report.find({
             reportStatus : {$ne: 'creating'},
-            reportAuthorityFull: reportAuthorityFull,
+            reportAuthoritiesFull: reportAuthorityFull,
             createdAt:{
                 $gte: timefrom,
                 $lte: timeto
@@ -170,7 +169,7 @@ router.get('/reports/byauthorityintimerange/:reportAuthorityFull/:timefrom/:time
 router.patch('/reports/update/:id', async (req, res) =>
 {
     const updates = Object.keys(req.body)
-    const allowedUpdates = ['reportStatus', 'reportAuthorityFull','reportAuthorityType', 'reporterName', 'reporterPhone', 'reporterEmail']
+    const allowedUpdates = ['reportStatus', 'reportAuthoritiesFull','reportAuthorityType', 'reporterName', 'reporterPhone', 'reporterEmail']
     const isValidOperation = updates.every((update) => {
         return allowedUpdates.includes(update)
     })

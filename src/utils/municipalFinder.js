@@ -11,8 +11,6 @@ const getMunicipalName = (i_Lat, i_Long)=>
         {
             const municipalName = body.features[1].text
             const adress = body.features[1].place_name_en
-            console.log(municipalName)
-            console.log(adress)
 
             if(error){
                 return reject(error)

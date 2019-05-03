@@ -2,7 +2,7 @@
 const Scenario = require('../models/scenarioModel')
 
 
-const getScenario = (i_Labels) =>
+const getScenarios = (i_Labels) =>
 {
     //TODO: complete
     return new Promise(async(resolve, reject) =>
@@ -20,11 +20,11 @@ const getScenario = (i_Labels) =>
                 return reject('Scenarios not found')
             }
 
-            resolve(matchesScenariosNames[0])
+            resolve(matchesScenariosNames)
         } catch (error) {
             reject(error)
         }
     })
 }
 
-module.exports = {getScenario: getScenario}
+module.exports = {getScenarios: getScenarios}

@@ -29,7 +29,9 @@ const getLabels = async function(i_Path)
             labels.forEach((label) => {
                 stringLabels.push(label.description)
             })
-    
+
+            //test
+            console.log(stringLabels)
             resolve(stringLabels)
         })
         .catch(err => {

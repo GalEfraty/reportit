@@ -14,34 +14,6 @@ const authoritiesFinder = require('../utils/authoritiesFinder')
 //allowing seperate files for each api route (so index.js wont look too long and messy)
 const router = new express.Router()
 
-//post: create new report - REQ01
-router.post('/reports/create', async (req, res) => 
-{
-    try {
-        //const report = await reportsBuilder.build(req.params, req)
-
-        var report = new Report()
-
-        report.reporterName = req.body.reporterName
-        report.reporterPhone = req.body.reporterPhone
-        report.reporterEmail = req.body.reporterEmail
-        report.reportLocation = req.body.reportLocation
-        report.reportStatus = "creating"
-
-        const reportMunicipalName = await municipalFinder.getMunicipalName(req.body.reportLocation.latitude, req.body.reportLocation.longitude)
-        report.reportMunicipalName = await reportMunicipalName.municipalName
-
-        await report.save()
-        res.status(201).send({
-            message: `Report created succesfully`,
-            report: report})
-
-     } catch (error) {
-         console.log('Error in create report: ', error)
-        res.status(400).send(error)
-     }
-})
-
 //create a multer instance and middlewere to allow and control file upload
 const upload = multer({
     limits: {fileSize: 1500000}, //1.5 mb
@@ -54,6 +26,66 @@ const upload = multer({
         return cb(undefined, true)
     }  
 })
+
+//post: create new report - REQ01
+router.post('/reports/create',  upload.single('reportpicture'), async (req, res) => 
+{
+    try {
+        //const report = await reportsBuilder.build(req.params, req)
+
+        var report = await new Report()
+
+        report.reporterName = await req.body.reporterName
+        report.reporterPhone = await req.body.reporterPhone
+        report.reporterEmail = await req.body.reporterEmail
+        report.reportLocation.latitude = await req.body.latitude
+        report.reportLocation.longitude = await req.body.longitude
+
+        report.reportStatus = await "creating"
+
+        const reportMunicipalName = await municipalFinder.getMunicipalName(req.body.reportLocation.latitude, req.body.reportLocation.longitude)
+        report.reportMunicipalName = await reportMunicipalName.municipalName
+
+        //picture upload
+        if(!req.file){
+            throw Error('no image found')
+        }
+
+        const buffer = await sharp(req.file.buffer).resize({width: 250, height: 250}).png().toBuffer()
+        report.reportPicture = await buffer
+
+        const labels = await googleVisionLabelDetector.getLabels(req.file.buffer) //labels = ['str']
+        const reportScenarios = await scenariosFinder.getScenarios(labels) //reportScenarios =['str']
+        
+        const reportAuthorityTypes = await authoritiesFinder.getAuthorityTypes(reportScenarios) //reportAuthorityTypes = ['str']
+        const reportAuthoritiesFull = await authoritiesFinder.getAuthoritiesFull(report.reportMunicipalName, reportAuthorityTypes) //reportAuthoritiesFull = ['str']
+
+        report.reportAuthorityTypes = await reportAuthorityTypes 
+        report.reportAuthoritiesFull = await reportAuthoritiesFull
+        report.reportScenarios = await reportScenarios
+        report.reportStatus = await "created"
+
+        if(report.reporterEmail)
+        {
+            emailSender.sendReportMail(report)
+        }
+        //end picture upload
+
+        await report.save()
+        res.status(201).send({
+            message: `Report created succesfully`,
+            report: report})
+
+     } catch (error) {
+         console.log('Error in create report: ', error)
+        res.status(400).send(error)
+     }
+}, (error, req, res, next) =>
+{
+    res.status(400).send({error: error.message})
+})
+
+
 
 router.post('/reports/create/uploadPicture/:id', upload.single('reportpicture'), async (req, res) =>
 {

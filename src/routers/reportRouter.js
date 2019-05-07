@@ -30,6 +30,7 @@ const upload = multer({
 //post: create new report - REQ01
 router.post('/reports/create',  upload.single('reportpicture'), async (req, res) => 
 {
+  
     try {
         //const report = await reportsBuilder.build(req.params, req)
 
@@ -43,7 +44,7 @@ router.post('/reports/create',  upload.single('reportpicture'), async (req, res)
 
         report.reportStatus = await "creating"
 
-        const reportMunicipalName = await municipalFinder.getMunicipalName(req.body.reportLocation.latitude, req.body.reportLocation.longitude)
+        const reportMunicipalName = await municipalFinder.getMunicipalName(req.body.latitude, req.body.longitude)
         report.reportMunicipalName = await reportMunicipalName.municipalName
 
         //picture upload
@@ -82,49 +83,6 @@ router.post('/reports/create',  upload.single('reportpicture'), async (req, res)
      }
 }, (error, req, res, next) =>
 {
-    res.status(400).send({error: error.message})
-})
-
-
-
-router.post('/reports/create/uploadPicture/:id', upload.single('reportpicture'), async (req, res) =>
-{
-    try {
-        const report = await Report.findById(req.params.id)
-        if(!report){
-            throw Error('no report found')
-        }
-        if(!req.file){
-            throw Error('no image found')
-        }
-
-        const buffer = await sharp(req.file.buffer).resize({width: 250, height: 250}).png().toBuffer()
-        report.reportPicture = await buffer
-
-        const labels = await googleVisionLabelDetector.getLabels(req.file.buffer) //labels = ['str']
-        const reportScenarios = await scenariosFinder.getScenarios(labels) //reportScenarios =['str']
-        
-        const reportAuthorityTypes = await authoritiesFinder.getAuthorityTypes(reportScenarios) //reportAuthorityTypes = ['str']
-        const reportAuthoritiesFull = await authoritiesFinder.getAuthoritiesFull(report.reportMunicipalName, reportAuthorityTypes) //reportAuthoritiesFull = ['str']
-
-        report.reportAuthorityTypes = await reportAuthorityTypes 
-        report.reportAuthoritiesFull = await reportAuthoritiesFull
-        report.reportScenarios = await reportScenarios
-        report.reportStatus = await "created"
-
-        if(report.reporterEmail)
-        {
-            emailSender.sendReportMail(report)
-        }
-
-        report.save()
-        res.send({message: 'success', report})
-
-    } catch (error) {
-        res.status(400).send({error: error})
-    }
-
-}, (error, req, res, next) =>{
     res.status(400).send({error: error.message})
 })
 

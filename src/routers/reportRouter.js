@@ -16,7 +16,7 @@ const router = new express.Router()
 
 //create a multer instance and middlewere to allow and control file upload
 const upload = multer({
-    limits: {fileSize: 1500000}, //1.5 mb
+    limits: {fileSize: 4500000}, //4.5 mb
     fileFilter(req, file, cb)
     {
         if(!(file.originalname.endsWith('jpg') || file.originalname.endsWith('jpeg') || file.originalname.endsWith('png')))
@@ -32,8 +32,6 @@ router.post('/reports/create',  upload.single('reportpicture'), async (req, res)
 {
   
     try {
-        //const report = await reportsBuilder.build(req.params, req)
-
         var report = await new Report()
 
         report.reporterName = await req.body.reporterName
@@ -47,7 +45,6 @@ router.post('/reports/create',  upload.single('reportpicture'), async (req, res)
         const reportMunicipalName = await municipalFinder.getMunicipalName(req.body.latitude, req.body.longitude)
         report.reportMunicipalName = await reportMunicipalName.municipalName
 
-        //picture upload
         if(!req.file){
             throw Error('no image found')
         }
@@ -70,7 +67,6 @@ router.post('/reports/create',  upload.single('reportpicture'), async (req, res)
         {
             emailSender.sendReportMail(report)
         }
-        //end picture upload
 
         await report.save()
         res.status(201).send({

@@ -15,7 +15,6 @@ const authoritiesFinder = require('../utils/authoritiesFinder')
 const router = new express.Router()
 
 //post: create new report - REQ01
-
 router.post('/reports/create', async (req, res) => 
 {
     try {
@@ -170,7 +169,7 @@ router.get('/reports/byauthorityintimerange/:reportAuthorityFull/:timefrom/:time
 router.patch('/reports/update/:id', async (req, res) =>
 {
     const updates = Object.keys(req.body)
-    const allowedUpdates = ['reportStatus', 'reportAuthoritiesFull','reportAuthorityType', 'reporterName', 'reporterPhone', 'reporterEmail']
+    const allowedUpdates = ['reportStatus', 'reportAuthoritiesFull','reportAuthorityTypes', 'reporterName', 'reporterPhone', 'reporterEmail']
     const isValidOperation = updates.every((update) => {
         return allowedUpdates.includes(update)
     })

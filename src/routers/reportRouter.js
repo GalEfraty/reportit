@@ -148,8 +148,6 @@ router.get('/reports/byauthority/:reportAuthorityFull', async (req, res) =>
 router.get('/reports/byauthorityintimerange/:reportAuthorityFull/:timefrom/:timeto', async (req, res) => 
 {
     const reportAuthorityFull = req.params.reportAuthorityFull
-    // const timefrom = req.params.timefrom
-    // const timeto = req.params.timeto
     const timefrom = moment.unix(parseInt(req.params.timefrom))
     const timeto = moment.unix(parseInt(req.params.timeto))
     console.log(timefrom)

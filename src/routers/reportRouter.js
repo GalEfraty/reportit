@@ -2,6 +2,7 @@ const express = require('express')
 const Report = require('../models/reportModel')
 const multer = require('multer')
 const sharp = require('sharp')
+const moment = require('moment')
 
 const emailSender = require('../utils/emailSender')
 const municipalFinder = require('../utils/municipalFinder')
@@ -12,7 +13,6 @@ const authoritiesFinder = require('../utils/authoritiesFinder')
 
 //allowing seperate files for each api route (so index.js wont look too long and messy)
 const router = new express.Router()
-
 
 //post: create new report - REQ01
 
@@ -148,8 +148,11 @@ router.get('/reports/byauthority/:reportAuthorityFull', async (req, res) =>
 router.get('/reports/byauthorityintimerange/:reportAuthorityFull/:timefrom/:timeto', async (req, res) => 
 {
     const reportAuthorityFull = req.params.reportAuthorityFull
-    const timefrom = req.params.timefrom
-    const timeto = req.params.timeto
+    // const timefrom = req.params.timefrom
+    // const timeto = req.params.timeto
+    const timefrom = moment.unix(parseInt(req.params.timefrom))
+    const timeto = moment.unix(parseInt(req.params.timeto))
+    console.log(timefrom)
 
     try {
         const reports = await Report.find({

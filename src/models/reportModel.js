@@ -9,18 +9,17 @@ const reportSchema = mongoose.Schema({
     reporterName: {
         type: String,
         trim: true,
-        default: "Anonymous reporter"
+        required: true
     },
 
     reporterPhone: {
-        type: Number,
-        default: 0,
+        type: Number
     },
 
     reporterEmail: {
         type: String,
         trim: true,
-        default: "Anonymousreporter@report.it",
+        required: true,
         validate(value){
             if(!validator.isEmail(value)){throw Error('Email is invalid')}
         }
@@ -40,7 +39,7 @@ const reportSchema = mongoose.Schema({
 
     reportAuthorityTypes:{
         type: [String],
-        //TODO: validate if the authority exist in db bu find. if not, Error
+        required: true
     },
 
     reportMunicipalName: {
@@ -51,6 +50,7 @@ const reportSchema = mongoose.Schema({
 
     reportAuthoritiesFull: {
         type: [String],
+        required: true,
         validate(value)
         {
             value.forEach((element) => 
@@ -63,20 +63,20 @@ const reportSchema = mongoose.Schema({
         }
     }, 
 
-    //--TODO inside nice to have
     reportScenarios: {
-        type: [String]
-        //TODO: validate:: if the Scenario exist in db. if not, Error
-    }, 
+        type: [String],
+        required: true
+        }, 
 
     reportStatus:{
         required: true,
         type: String,
-        default: 'No Status'
+        required: true
     }, 
 
     reportPicture: {
-        type: Buffer
+        type: Buffer,
+        required: true
     }, 
 }, {timestamps: true})
 

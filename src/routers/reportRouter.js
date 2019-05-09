@@ -21,7 +21,7 @@ const upload = multer({
     {
         if(!(file.originalname.endsWith('jpg') || file.originalname.endsWith('jpeg') || file.originalname.endsWith('png')))
         {
-            return cb(new Error('Please upload an image'), false)
+            return cb(new Error('Please upload an image file'), false)
         }
         return cb(undefined, true)
     }  
@@ -30,8 +30,9 @@ const upload = multer({
 //post: create new report - REQ01
 router.post('/reports/create',  upload.single('reportpicture'), async (req, res) => 
 {
-  
     try {
+        if(!req.file){throw Error('no image found')}
+
         var report = await new Report()
 
         report.reporterName = await req.body.reporterName
@@ -40,14 +41,10 @@ router.post('/reports/create',  upload.single('reportpicture'), async (req, res)
         report.reportLocation.latitude = await req.body.latitude
         report.reportLocation.longitude = await req.body.longitude
 
-        report.reportStatus = await "creating"
 
         const reportMunicipalName = await municipalFinder.getMunicipalName(req.body.latitude, req.body.longitude)
+        if(!reportMunicipalName){throw Error('Municipal Name not found')}
         report.reportMunicipalName = await reportMunicipalName.municipalName
-
-        if(!req.file){
-            throw Error('no image found')
-        }
 
         const buffer = await sharp(req.file.buffer).resize({width: 250, height: 250}).png().toBuffer()
         report.reportPicture = await buffer
@@ -74,12 +71,11 @@ router.post('/reports/create',  upload.single('reportpicture'), async (req, res)
             report: report})
 
      } catch (error) {
-         console.log('Error in create report: ', error)
-        res.status(400).send(error)
+        res.status(400).send({error: error})
      }
 }, (error, req, res, next) =>
 {
-    res.status(400).send({error: error.message})
+    res.status(400).send({error: error})
 })
 
 //get all Reports

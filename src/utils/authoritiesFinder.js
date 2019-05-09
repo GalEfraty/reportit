@@ -6,12 +6,15 @@ const getAuthorityTypes = (i_ReportScenarios) =>
     {
         try {
             const allAuthorities = await Authority.find({})
+            if(!allAuthorities){throw Error('unable to fetch authorities')}
             let matchAuthoritiesTotal = []
             
             i_ReportScenarios.forEach(async (scenario) =>
             {
                 //all the authorities that include the scenario in their scenarios array
                 const matchAuthorities = await allAuthorities.filter(authority => authority.scenarios.includes(scenario))
+
+                if(!matchAuthorities){throw Error('couldn\'t find authorities that match the scenarios')}
 
                 await matchAuthorities.forEach((authority) => 
                 {

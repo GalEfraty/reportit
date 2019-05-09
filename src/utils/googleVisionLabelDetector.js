@@ -32,6 +32,8 @@ const getLabels = async function(i_Path)
 
             //test
             console.log(stringLabels)
+            if(!labels){throw Error('label detection process faild')}
+            
             resolve(stringLabels)
         })
         .catch(err => {

@@ -13,7 +13,7 @@ router.post('/authorities/create', async (req, res) =>
         await authority.save()
         res.status(201).send({message: `authority created successfully`, authority: authority})
      } catch (error) {
-        res.status(400).send(error)
+        res.status(400).send({error: error})
      }
 })
 
@@ -24,7 +24,7 @@ router.get('/authorities/all', async (req, res) =>
         const authorities = await Authority.find({})
         res.send({message: `showing all ${authorities.length} authorities`, authorities: authorities})
     } catch (error) {
-        res.status(500).send(error)
+        res.status(500).send({error: error})
     }
 })
 
@@ -40,7 +40,7 @@ router.get('/authorities/:id', async (req, res) =>
         }
         res.send({message: 'authority has been found successfully', authority: authority}) 
     } catch (error) {
-        res.status(500).send(error)
+        res.status(500).send({error: error})
     }
 })
 
@@ -71,7 +71,7 @@ router.patch('/authorities/update/addscenariotoauthority/:id', async (req, res) 
         authority.save()
         res.send({message: 'updated successfully', authority: authority})
     } catch (error) {
-        res.status(400).send(error)
+        res.status(400).send({error: error})
     }   
 })
 
@@ -109,7 +109,7 @@ router.patch('/authorities/update/:id', async (req, res) =>
         }
         res.send({message: 'updated', authority: authority})
     } catch (error) {
-        res.status(400).send(error)
+        res.status(400).send({error: error})
     }
 })
 
@@ -123,7 +123,7 @@ router.delete('/authorities/delete/:id', async (req, res) =>
         }
         res.send({message: 'deleted', authority: authority})
     } catch (error) {
-        res.status(500).send(error)
+        res.status(500).send({error: error})
     }
 })
 

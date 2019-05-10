@@ -87,7 +87,7 @@ router.get('/reports/all', async (req, res) =>
             message: `found ${reports.length} reports`,
             reports: reports})
     } catch (error) {
-        res.status(500).send(error)
+        res.status(500).send({error: error})
     }
 })
 
@@ -103,7 +103,7 @@ router.get('/reports/:id', async (req, res) =>
         }
         res.send({message: 'report has been found successfully', report: report}) 
     } catch (error) {
-        res.status(500).send(error)
+        res.status(500).send({error: error})
     }
 })
 
@@ -121,7 +121,7 @@ router.get('/reports/byauthority/:reportAuthorityFull', async (req, res) =>
         })
         res.send({message: `found ${reports.length} reports for ${reportAuthorityFull}`, reports: reports})
     } catch (error) {
-        res.status(500).send(error)
+        res.status(500).send({error: error})
     }
 })
 
@@ -143,7 +143,7 @@ router.get('/reports/byauthorityintimerange/:reportAuthorityFull/:timefrom/:time
             }})
         res.send({message: `${reports.length} reports has been found between ${timefrom} to ${timeto}`, reports: reports})
     } catch (error) {
-        res.status(500).send(error)
+        res.status(500).send({error: error})
     }
 })
 
@@ -173,7 +173,7 @@ router.patch('/reports/update/:id', async (req, res) =>
         }
         res.send({message: `the report has been updated successfully`, report: report})
     } catch (error) {
-        res.status(400).send(error)
+        res.status(400).send({error: error})
     }
 })
 
@@ -187,7 +187,7 @@ router.delete('/reports/delete/:id', async (req, res) =>
         }
         res.send({message: 'deleted successfully', report: report})
     } catch (error) {
-        res.status(500).send(error)
+        res.status(500).send({error: error})
     }
 })
 

@@ -13,7 +13,7 @@ router.post('/scenarios/create', async (req, res) =>
         await scenario.save()
         res.status(201).send(scenario)
      } catch (error) {
-        res.status(400).send(error)
+        res.status(400).send({error: error})
      }
 })
 
@@ -24,7 +24,7 @@ router.get('/scenarios/all', async (req, res) =>
         const scenarios = await Scenario.find({})
         res.send({message: `showing all ${scenarios.length} scenarios`, scenarios: scenarios})
     } catch (error) {
-        res.status(500).send(error)
+        res.status(500).send({error: error})
     }
 })
 
@@ -40,7 +40,7 @@ router.get('/scenarios/:id', async (req, res) =>
         }
         res.send({message: 'found successfully', scenario: scenario}) 
     } catch (error) {
-        res.status(500).send(error)
+        res.status(500).send({error: error})
     }
 })
 
@@ -73,7 +73,7 @@ router.patch('/scenarios/update/addlabels/:id', async (req, res) =>
         const addedLabels = req.body.length? labels.length : 1
         res.send({message: `Updated successfully: ${addedLabels} labels added`, senario: scenario})
     } catch (error) {
-        res.status(400).send(error)
+        res.status(400).send({error: error})
     }   
 })
 
@@ -103,7 +103,7 @@ router.patch('/scenarios/update/:id', async (req, res) =>
         }
         res.send({message: 'updated successfully', scenario: scenario})
     } catch (error) {
-        res.status(400).send(error)
+        res.status(400).send({error: error})
     }
 })
 
@@ -117,7 +117,7 @@ router.delete('/scenarios/delete/:id', async (req, res) =>
         }
         res.send({message: 'deleted successfully', scenario: scenario})
     } catch (error) {
-        res.status(500).send(error)
+        res.status(500).send({error: error})
     }
 })
 

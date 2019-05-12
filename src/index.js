@@ -15,12 +15,10 @@ app.use(reportRouter)
 app.use(authorityRouter)
 app.use(scenarioRouter)
 
-
 app.get('', (req, res) => 
 {
     res.send('Hello Report It!')
 })
-
 
 //server flag
 app.listen(port, () => {

@@ -27,8 +27,8 @@ const upload = multer({
     }  
 })
 
-//post: create new report - REQ01
-router.get('/reports/create',  upload.single('reportpicture'), async (req, res) => 
+//post: create new report
+router.post('/reports/create',  upload.single('reportpicture'), async (req, res) => 
 {
     try {
         if(!req.file){throw Error('no image found')}

@@ -7,13 +7,7 @@ const scenarioRouter = require('./routers/scenarioRouter')
 const app = express()
 const port = process.env.PORT
 
-//auto parse income json files to js objects
-app.use(express.json())
-
-//allowing seperate files for each api route (so index.js wont look too long and messy)
-app.use(reportRouter)
-app.use(authorityRouter)
-app.use(scenarioRouter)
+//allow the front to get the json responses
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", '*');
     res.header("Access-Control-Allow-Credentials", true);
@@ -21,6 +15,14 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,Accept,content-type,application/json');
     next();
 });
+
+//auto parse income json files to js objects
+app.use(express.json())
+
+//allowing seperate files for each api route (so index.js wont look too long and messy)
+app.use(reportRouter)
+app.use(authorityRouter)
+app.use(scenarioRouter)
 
 app.get('', (req, res) => 
 {

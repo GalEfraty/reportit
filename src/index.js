@@ -8,6 +8,9 @@ const app = express()
 const port = process.env.PORT
 
 //allow the front to get the json responses
+app.use(cors())
+app.options('*', cors())
+
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", '*');
     res.header("Access-Control-Allow-Credentials", true);

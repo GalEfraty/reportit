@@ -12,6 +12,7 @@
   "dependencies": {
     "@google-cloud/vision": "^0.25.0",
     "@sendgrid/mail": "^6.3.1",
+    "cors": "^2.8.5",
     "express": "^4.16.4",
     "google-auth-library": "^3.1.2",
     "moment": "^2.24.0",

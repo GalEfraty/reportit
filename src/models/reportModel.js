@@ -13,7 +13,7 @@ const reportSchema = mongoose.Schema({
     },
 
     reporterPhone: {
-        type: Number
+        type: String
     },
 
     reporterEmail: {

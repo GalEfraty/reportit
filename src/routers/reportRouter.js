@@ -41,14 +41,20 @@ router.post('/reports/create',  upload.single('reportpicture'), async (req, res)
             report.reporterName = await req.body.reporterName
             report.reporterPhone = await req.body.reporterPhone
             report.reporterEmail = await req.body.reporterEmail
+
+            if(!req.body.latitude || !req.body.longitude)
+            {
+                return res.status(400).send({error: 'Unable to find your location, please enable your GPS'})
+            }
+
             report.reportLocation.latitude = await req.body.latitude
             report.reportLocation.longitude = await req.body.longitude
-    
+
             var reportMunicipalName
             try {
                 reportMunicipalName = await municipalFinder.getMunicipalName(req.body.latitude, req.body.longitude)
             } catch (error) {
-                return res.status(400).send({error: 'No geo location'})
+                return res.status(400).send({error: 'Unable to find municipal name'})
             }
 
             if(!reportMunicipalName)

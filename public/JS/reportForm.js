@@ -6,7 +6,7 @@ $(function() {
     $('.lds-spinner').hide();
 
     $('#reportForm').ajaxForm({
-        url: "https://report-it.herokuapp.com/reports/create", //"http://localhost:3001/reports/create"
+        url: "http://localhost:3001/reports/create", //"http://localhost:3001/reports/create"
         dataType: 'json',
         crossDomain: true,
         success: function (resp) {

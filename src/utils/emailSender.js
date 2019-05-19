@@ -10,7 +10,6 @@ const sendReportMail = (i_Report) =>
         from: 'reports@report.it',
         subject: 'New report',
         text: mailBody(i_Report),
-        html:'<img src="./mailBanner.png">'
     })
 }
 

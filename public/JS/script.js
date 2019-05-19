@@ -84,7 +84,7 @@ $(document).ready(function(){
         //ENV???
         //"http://localhost:3001"
         //"https://report-it.herokuapp.com"
-      location.replace("http://localhost:3001")
+      location.replace("https://report-it.herokuapp.com")
       });
     //send Toggle form
   });

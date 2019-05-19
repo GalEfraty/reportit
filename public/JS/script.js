@@ -1,3 +1,5 @@
+//require('dotenv').config()
+
 //info messege
 function myFunction() {
     swal("💻Our Team💻", "We are dedicated to making a safer world. \n ReportIt - an easy reporting system! \n \n Reportit gives you an easy way to report about municipal hazards", "success")
@@ -79,7 +81,8 @@ $(document).ready(function () {
 $(document).ready(function(){
     //Close Toggle form
     $("#buttonC").click(function(){
-      location.replace("http://localhost/")
+        //ENV???
+      location.replace("https://report-it.herokuapp.com/")//"http://localhost:3001"
       });
     //send Toggle form
   });

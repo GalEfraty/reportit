@@ -1,8 +1,12 @@
+require('dotenv').config()
+
+//url-dev:"http://localhost:3001/reports/create"
+//url-prod:"https://report-it.herokuapp.com/reports/create"
 $(function() {
     $('.lds-spinner').hide();
 
     $('#reportForm').ajaxForm({
-        url: process.env.CREATE_REPORT_REQUEST_URL,
+        url: "https://report-it.herokuapp.com/reports/create", //"http://localhost:3001/reports/create"
         dataType: 'json',
         crossDomain: true,
         success: function (resp) {

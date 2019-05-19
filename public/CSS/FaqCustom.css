@@ -41,7 +41,8 @@ li {
 .faq li {
     padding: 20px;
 }
-.faq li.q {
+
+.q {
     background: #0E1D70;
     font-weight: bold;
     font-size: 120%;

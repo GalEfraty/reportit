@@ -120,64 +120,76 @@
                 </div>
                 <img class="center" src="Images/reporticon.png" alt="reporticon" height="42" width="42" />
                 <div class="modal-body" id="reportFormContainer">
-                    <div id="formLoader"></div><div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
-                    <form method="post"
-                        enctype="multipart/form-data" id="reportForm">
-                    <div style="padding:10px">
-                        <div class="form-group">
-                            <label class="control-label"><b>Full name</b></label>
-                            <div>
-                                <input type="text" pattern="{1,20}" class="form-control input-lg" name="reporterName"
-                                    required>
-                            </div>
+                    <div id="formLoader"></div>
+                    <div class="lds-spinner">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+                <form method="post" enctype="multipart/form-data" id="reportForm">
+                    <div class="form-group">
+                        <label class="control-label"><b>&nbsp;Full name</b></label>
                         <div>
-                        <div class="form-group">
-                            <label class="control-label"><b>Phone Number</b></label>
-                            <div>
-                                <input type="tel" pattern="[0-9]{10}" class="form-control input-lg"
-                                    name="reporterPhone">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label"><b>Email adress</b></label>
-                            <div>
-                                <input type="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$"
-                                    class="form-control input-lg" name="reporterEmail" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label"><b>Upload Picture</b></label>
-                            <div  class="custom-file mb-2">
-                                <input type="file" id="File" class="custom-file-input" capture="camera" accept="image/jpeg, image/png" name="reportpicture" required>
-                                <label class="custom-file-label"  id="FileL" for="customFile">Picture of the issue</label>
-                            </div>
-                        </div>
-                        <input type="hidden" id="latitude" name="latitude" />
-                        <input type="hidden" id="longitude" name="longitude" />
-                        <div class="form-group">
-                            <div>
-                                <button type="submit" class="btn btn-success" id="submitForm">Submit</button>
-                                <button type="button" class="btn btn-danger" id="buttonC" style="float: right;">Cancel</button>
-                            </div>
+                            <input type="text" pattern="{1,20}" class="form-control input-lg" name="reporterName"
+                                required>
                         </div>
                     </div>
-                    </form>
-                </div>
+                    <div class="form-group">
+                        <label class="control-label"><b>&nbsp;Phone Number</b></label>
+                        <div>
+                            <input type="tel" pattern="[0-9]{10}" class="form-control input-lg" name="reporterPhone">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label"><b>&nbsp;Email adress</b></label>
+                        <div>
+                            <input type="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$"
+                                class="form-control input-lg" name="reporterEmail" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label"><b>&nbsp;Upload Picture</b></label>
+                        <div class="custom-file mb-2">
+                            <input type="file" id="File" class="custom-file-input" capture="camera"
+                                accept="image/jpeg, image/png" name="reportpicture" required>
+                            <label class="custom-file-label" id="FileL" for="customFile">Picture of the hazard</label>
+                        </div>
+                    </div>
+                    <input type="hidden" id="latitude" name="latitude" />
+                    <input type="hidden" id="longitude" name="longitude" />
+                    <div class="form-group">
+                        <div>
+                            <button type="submit" class="btn btn-success" id="submitForm">Submit</button>
+                            <button type="button" class="btn btn-info" id="buttonC">Cancel</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+    </div>
     <!-- End Toggle form -->
 
-    <!-- Footer -->
     <footer>
         <div class="row ncolor">
             <div class="col-md-12">
-                <a href="tel:03-6013601"><i class="fa fa-phone fa-4x" aria-hidden="true"></i></a>
-                <button class="info" onclick="myFunction()"><img src="Images/info 2.png" height="50px"
-                        width="50px"></button>
-            </div>
+            <a href="tel:03-6013601"><i class="fa fa-phone fa-4x" aria-hidden="true"></i></a>
+            <button class="info" onclick="myFunctionfoot()"><img src="/Images/info 2.png" height="50px" width="50px"></button>
+          </div>
         </div>
     </footer>
+    
+
 </body>
 
 </html>

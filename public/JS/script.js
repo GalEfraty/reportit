@@ -1,11 +1,11 @@
 //require('dotenv').config()
 
 //info messege
-function myFunction() {
+function myFunctionfoot() {
     swal("💻Our Team💻", "We are dedicated to making a safer world. \n ReportIt - an easy reporting system! \n \n Reportit gives you an easy way to report about municipal hazards", "success")
 }
 
-//Google map
+//Google map 
 var map, infoWindow, pos;
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {

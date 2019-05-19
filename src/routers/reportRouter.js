@@ -30,54 +30,87 @@ const upload = multer({
 //post: create new report
 router.post('/reports/create',  upload.single('reportpicture'), async (req, res) => 
 {
-    try {
-        if(!req.file){throw Error('no image found')}
-
-        var report = await new Report()
-
-        report.reporterName = await req.body.reporterName
-        report.reporterPhone = await req.body.reporterPhone
-        report.reporterEmail = await req.body.reporterEmail
-        report.reportLocation.latitude = await req.body.latitude
-        report.reportLocation.longitude = await req.body.longitude
-
-
-        const reportMunicipalName = await municipalFinder.getMunicipalName(req.body.latitude, req.body.longitude)
-        if(!reportMunicipalName){throw Error('Municipal Name not found')}
-        report.reportMunicipalName = await reportMunicipalName.municipalName
-
-        const buffer = await sharp(req.file.buffer).resize({width: 250, height: 250}).png().toBuffer()
-        report.reportPicture = await buffer
-
-        const labels = await googleVisionLabelDetector.getLabels(req.file.buffer) //labels = ['str']
-        const reportScenarios = await scenariosFinder.getScenarios(labels) //reportScenarios =['str']
-        
-        const reportAuthorityTypes = await authoritiesFinder.getAuthorityTypes(reportScenarios) //reportAuthorityTypes = ['str']
-        const reportAuthoritiesFull = await authoritiesFinder.getAuthoritiesFull(report.reportMunicipalName, reportAuthorityTypes) //reportAuthoritiesFull = ['str']
-
-        report.reportAuthorityTypes = await reportAuthorityTypes 
-        report.reportAuthoritiesFull = await reportAuthoritiesFull
-        report.reportScenarios = await reportScenarios
-        report.reportStatus = await "created"
-
-        if(report.reporterEmail)
+        if(!req.file)
         {
-            emailSender.sendReportMail(report)
+            res.status(400).send({error: 'no image found'})
         }
+        else
+        {
+            var report = await new Report()
 
-        await report.save()
+            report.reporterName = await req.body.reporterName
+            report.reporterPhone = await req.body.reporterPhone
+            report.reporterEmail = await req.body.reporterEmail
+            report.reportLocation.latitude = await req.body.latitude
+            report.reportLocation.longitude = await req.body.longitude
+    
+            var reportMunicipalName
+            try {
+                reportMunicipalName = await municipalFinder.getMunicipalName(req.body.latitude, req.body.longitude)
+            } catch (error) {
+                return res.status(400).send({error: 'No geo location'})
+            }
+
+            if(!reportMunicipalName)
+            {
+                return res.status(400).send({error: 'Municipal Name not found'}) 
+            }
+            else
+            {
+                report.reportMunicipalName = await reportMunicipalName.municipalName
+    
+                const buffer = await sharp(req.file.buffer).resize({width: 250, height: 250}).png().toBuffer()
+                report.reportPicture = await buffer
+                
+                //trycatch labels scenarios??
+                var labels
+                try {
+                    labels = await googleVisionLabelDetector.getLabels(req.file.buffer) //labels = ['str']
+                } catch (error) {
+                    return res.status(400).send({error: 'Unable to analyze picture'}) 
+                }
+
+                var reportScenarios
+                try {
+                    reportScenarios = await scenariosFinder.getScenarios(labels) //reportScenarios =['str']
+                } catch (error) {
+                    return res.status(400).send({error: 'Unable to find scenario'}) 
+                }
+
+                var reportAuthorityTypes
+                try {
+                    reportAuthorityTypes = await authoritiesFinder.getAuthorityTypes(reportScenarios) //reportAuthorityTypes = ['str']
+                } catch (error) {
+                    return res.status(400).send({error: 'Unable to find the type of authorities'}) 
+                }
+
+                var reportAuthoritiesFull
+                try {
+                    reportAuthoritiesFull = await authoritiesFinder.getAuthoritiesFull(report.reportMunicipalName, reportAuthorityTypes) //reportAuthoritiesFull = ['str']
+                } catch (error) {
+                    return res.status(400).send({error: 'Unable to find the authorities'}) 
+                }
         
-        report.reportPicture = ''
-        res.status(201).send({
-            message: `Report created succesfully`,
-            report: report})
-
-     } catch (error) {
-        res.status(400).send({error: error})
-     }
-}, (error, req, res, next) =>
-{
-    res.status(400).send({error: error})
+                report.reportAuthorityTypes = await reportAuthorityTypes 
+                report.reportAuthoritiesFull = await reportAuthoritiesFull
+                report.reportScenarios = await reportScenarios
+                report.reportStatus = await "created"
+        
+                if(report.reporterEmail)
+                {
+                    emailSender.sendReportMail(report)
+                }
+        
+                await report.save()
+                
+                report.reportPicture = ''
+                report.body = await emailSender.mailBody(report);
+                res.status(201).send({
+                    message: `Report created succesfully`,
+                    report: report
+                })
+            }
+        }
 })
 
 //get all Reports
@@ -191,7 +224,7 @@ router.delete('/reports/delete/:id', async (req, res) =>
     } catch (error) {
         res.status(500).send({error: error})
     }
-})
+}) 
 
 //--export--\\
 module.exports = router

@@ -1,0 +1,163 @@
+<!--ReportIt--->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>ReportIT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" href="Images/icon.png" type="image/x-icon" sizes="32X32">
+    <!--  CSS -->
+    <link href="CSS/style.css" rel="stylesheet">
+    <!--  JS -->
+    <script src="JS/script.js"></script>
+    <!--links: -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Cuprum" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous">
+    </script>
+    <link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css' rel='stylesheet' />
+    <link href="https://fonts.googleapis.com/css?family=Saira+Semi+Condensed" rel="stylesheet">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js" integrity="sha384-FzT3vTVGXqf7wRfy8k4BiyzvbNfeYjK+frTVqZeNDFl8woCbF0CYG6g2fMEFFo/i" crossorigin="anonymous"></script>
+    <script src="JS/reportForm.js"></script>
+</head>
+
+<body id="fonti">
+
+    <!-- Menu navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark ncolor">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse " id="collapsibleNavbar">
+            <ul class="navbar-nav mr-auto col-sm-3 col-md-3 ">
+                <li class="nav-item ">
+                    <a class="nav-link " href="index.html"><i class="fa fa-home fa-2x"  ></i><i class="fa-2x" > &nbsp Home</i></a>
+                </li>
+
+                <li class="nav-item ">
+                    <a class="nav-link " href="mailto:contact@reportit.com"><i class="fa fa-envelope fa-2x"></i><i class="fa-2x" > &nbsp Contact</i></a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="Includes/FAQ.htm"><i class="fa fa-question fa-2x"></i><i class="fa-2x" > &nbsp FAQ</i></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- End navbar -->
+
+    <!-- Header -->
+    <div class="hero-bkg-animated">
+        <div class="container">
+            <div class="col-sm-12">
+                <div class="page-caption">
+                    <h1 class="page-title">Welcome to ReportIT </h1>
+                    <img id="logoImg dot" src="Images/logo.png" alt="logo">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ReportIt Signal -->
+    <div class="col-sm-12 " style="background-color:#0E1D70;">
+        <label for="file-input" class="intro-banner-vdo-play-btn pinkBg">
+            <i class="glyphicon glyphicon-play whiteText" aria-hidden="true"></i>
+            <span class="ripple pinkBg"></span>
+            <span class="ripple pinkBg"></span>
+            <span class="ripple pinkBg"></span>
+            <div class="inv-upload">
+                <input id="file-input" data-toggle="modal" data-target="#ModalForm" />
+            </div>
+        </label>
+    </div>
+    <!-- End header -->
+
+    <!--Google map -->
+    <div id="map"></div>
+    <script src="JS/script.js"></script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIEJdFa483vyt3OjA7_7KKJSeigyBIJnk&callback=initMap">
+    </script>
+    <!--End Google map -->
+
+    <!--Toggle form -->
+    <div id="ModalForm" class="modal fade">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title center">Fill in your report</h1>
+                </div>
+                <img class="center" src="Images/reporticon.png" alt="reporticon" height="42" width="42" />
+                <div class="modal-body" id="reportFormContainer">
+                    <div id="formLoader"></div><div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
+                    <form method="post"
+                        enctype="multipart/form-data" id="reportForm">
+                    <div style="padding:10px">
+                        <div class="form-group">
+                            <label class="control-label"><b>Full name</b></label>
+                            <div>
+                                <input type="text" pattern="{1,20}" class="form-control input-lg" name="reporterName"
+                                    required>
+                            </div>
+                        <div>
+                        <div class="form-group">
+                            <label class="control-label"><b>Phone Number</b></label>
+                            <div>
+                                <input type="tel" pattern="[0-9]{10}" class="form-control input-lg"
+                                    name="reporterPhone">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label"><b>Email adress</b></label>
+                            <div>
+                                <input type="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$"
+                                    class="form-control input-lg" name="reporterEmail" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label"><b>Upload Picture</b></label>
+                            <div  class="custom-file mb-2">
+                                <input type="file" id="File" class="custom-file-input" capture="camera" accept="image/jpeg, image/png" name="reportpicture" required>
+                                <label class="custom-file-label"  id="FileL" for="customFile">Picture of the issue</label>
+                            </div>
+                        </div>
+                        <input type="hidden" id="latitude" name="latitude" />
+                        <input type="hidden" id="longitude" name="longitude" />
+                        <div class="form-group">
+                            <div>
+                                <button type="submit" class="btn btn-success" id="btn">Submit</button>
+                                <button type="button" class="btn btn-danger" id="btn" style="float: right;">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Toggle form -->
+
+    <!-- Footer -->
+    <footer>
+        <div class="row ncolor">
+            <div class="col-md-12">
+                <a href="tel:03-6013601"><i class="fa fa-phone fa-4x" aria-hidden="true"></i></a>
+                <button class="info" onclick="myFunction()"><img src="Images/info 2.png" height="50px"
+                        width="50px"></button>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

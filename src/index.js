@@ -5,9 +5,10 @@ const authorityRouter = require('./routers/authorityRouter')
 const scenarioRouter = require('./routers/scenarioRouter')
 
 const app = express()
+const cors = require('cors')
 const port = process.env.PORT
 
-//allow the front to get the json responses
+app.use(express.static('public'))
 app.use(cors())
 app.options('*', cors())
 
@@ -27,10 +28,10 @@ app.use(reportRouter)
 app.use(authorityRouter)
 app.use(scenarioRouter)
 
-app.get('', (req, res) => 
-{
-    res.send('Hello Report It!')
-})
+// app.get('', (req, res) => 
+// {
+//     res.send('Hello Report It!')
+// })
 
 //server flag
 app.listen(port, () => {

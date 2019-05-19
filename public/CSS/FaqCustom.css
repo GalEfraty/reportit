@@ -1,0 +1,80 @@
+h1 {
+    text-align: center;
+    font-family: 'Saira Semi Condensed', sans-serif;
+    color: black;
+    text-align: center;
+    font-weight: bold;
+}
+
+/*Responsive CSS*/
+
+* {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family:'Saira Semi Condensed', sans-serif;
+    color: white;
+    font-size: 16px;
+    background: #f9f9f9;
+    line-height: 1.6em;
+    background-image: url(../Images/question.jpg)
+}
+ul,
+li {
+    list-style: none;
+
+}
+#container {
+    margin: 60px auto;
+    overflow: auto;
+    margin-bottom: 14%;
+
+}
+.title {
+    height: 20px;
+    background: #6bb170;
+    color: white;
+    text-align: center;
+    padding-top: 13px;
+}
+.faq li {
+    padding: 20px;
+}
+.faq li.q {
+    background: #0E1D70;
+    font-weight: bold;
+    font-size: 120%;
+    border-bottom: 1px #ddd solid;
+    cursor: pointer;
+    text-align: center;
+}
+.faq li.a {
+    background: #0E1D70;
+    display: none;
+    color: #fff;
+    text-align: center;
+}
+.rotate {
+    -moz-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+@media (max-width:800px) {
+
+    #container {
+        width: 90%;
+    }
+}
+.goog-logo-link {
+    display: none !important;
+}
+.goog-te-gadget {
+    color: transparent !important;
+}
+.goog-te-gadget .goog-te-combo {
+    color: #0E1D70 !important;
+}
+.ncolor{
+    background-color: #0E1D70;
+}

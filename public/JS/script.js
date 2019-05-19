@@ -82,7 +82,9 @@ $(document).ready(function(){
     //Close Toggle form
     $("#buttonC").click(function(){
         //ENV???
-      location.replace("https://report-it.herokuapp.com/")//"http://localhost:3001"
+        //"http://localhost:3001"
+        //"https://report-it.herokuapp.com"
+      location.replace("http://localhost:3001")
       });
     //send Toggle form
   });

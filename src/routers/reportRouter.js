@@ -110,10 +110,11 @@ router.post('/reports/create',  upload.single('reportpicture'), async (req, res)
                 await report.save()
                 
                 report.reportPicture = ''
-                report.body = await emailSender.mailBody(report);
+                let text = await emailSender.mailBody(report);
                 res.status(201).send({
                     message: `Report created succesfully`,
-                    report: report
+                    report: report,
+                    text: text
                 })
             }
         }

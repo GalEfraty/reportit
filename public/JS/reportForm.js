@@ -6,30 +6,38 @@ $(function() {
     $('.lds-spinner').hide();
 
     $('#reportForm').ajaxForm({
-        url: "http://localhost:3001/reports/create", //"http://localhost:3001/reports/create"
+        url: "https://report-it.herokuapp.com/reports/create",
         dataType: 'json',
         crossDomain: true,
         success: function (resp) {
             $('.lds-spinner').hide();
-            $('#reportForm').show();
-
+            $('#reportForm').show();    
             swal({
-                position: 'top-end',
-                type: 'success',
                 title: resp.message,
-                showConfirmButton: false,
-                timer: 1500
-            })
-        },
+                text: resp.text,
+                type: "info",
+                showCancelButton: false,
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true,
+                showConfirmButton: true
+              })
+              .then(
+                  function()
+                    {
+                        //"http://localhost:3001"
+                        //"https://report-it.herokuapp.com"
+                        location.replace("https://report-it.herokuapp.com")
+                    }
+                )
+              },
         error: function(e) {
             $('.lds-spinner').hide();
             $('#reportForm').show();
-            
             console.log(e)
-
             swal({
                 type: 'error',
-                title: e.responseJSON.error
+                title: e.responseJSON.error,
+                showConfirmButton: true
             })
         },
         beforeSubmit: function(arr, $form, opts) {

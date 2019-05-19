@@ -44,7 +44,7 @@ router.post('/reports/create',  upload.single('reportpicture'), async (req, res)
 
             if(!req.body.latitude || !req.body.longitude)
             {
-                return res.status(400).send({error: 'Unable to find your location, please enable your GPS'})
+                return res.status(400).send({error: 'Unable to find your location, please enable your GPS and allow on website'})
             }
 
             report.reportLocation.latitude = await req.body.latitude
@@ -73,7 +73,7 @@ router.post('/reports/create',  upload.single('reportpicture'), async (req, res)
                 try {
                     labels = await googleVisionLabelDetector.getLabels(req.file.buffer) //labels = ['str']
                 } catch (error) {
-                    return res.status(400).send({error: 'Unable to analyze picture'}) 
+                    return res.status(400).send({error: 'Unable to analyze picture, Please upload a better picture of the issue'}) 
                 }
 
                 var reportScenarios
@@ -82,6 +82,10 @@ router.post('/reports/create',  upload.single('reportpicture'), async (req, res)
                 } catch (error) {
                     return res.status(400).send({error: 'Unable to find scenario'}) 
                 }
+                if(!reportScenarios)
+                {
+                    return res.status(400).send({error: 'Unable to find scenario, or not supported scenario'})
+                }
 
                 var reportAuthorityTypes
                 try {
@@ -89,12 +93,16 @@ router.post('/reports/create',  upload.single('reportpicture'), async (req, res)
                 } catch (error) {
                     return res.status(400).send({error: 'Unable to find the type of authorities'}) 
                 }
+                if(!reportAuthorityTypes)
+                {
+                    return res.status(400).send({error: 'Unable to find the type of authorities, or not supported authorities'})
+                }
 
                 var reportAuthoritiesFull
                 try {
                     reportAuthoritiesFull = await authoritiesFinder.getAuthoritiesFull(report.reportMunicipalName, reportAuthorityTypes) //reportAuthoritiesFull = ['str']
                 } catch (error) {
-                    return res.status(400).send({error: 'Unable to find the authorities'}) 
+                    return res.status(400).send({error: 'Unable to find the authorities, Please upload a better picture of the issue'}) 
                 }
         
                 report.reportAuthorityTypes = await reportAuthorityTypes 

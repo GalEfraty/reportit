@@ -19,7 +19,9 @@ const upload = multer({
     limits: {fileSize: 4500000}, //4.5 mb
     fileFilter(req, file, cb)
     {
-        if(!(file.originalname.endsWith('jpg') || file.originalname.endsWith('jpeg') || file.originalname.endsWith('png')))
+        if(!(file.originalname.toLowerCase().endsWith('jpg') || 
+            file.originalname.toLowerCase().endsWith('jpeg') || 
+            file.originalname.toLowerCase().endsWith('png')))
         {
             return cb(new Error('Please upload an image file'), false)
         }
@@ -65,7 +67,7 @@ router.post('/reports/create',  upload.single('reportpicture'), async (req, res)
             {
                 report.reportMunicipalName = await reportMunicipalName.municipalName
     
-                const buffer = await sharp(req.file.buffer).resize({width: 250, height: 250}).png().toBuffer()
+                const buffer = await sharp(req.file.buffer).resize({width: 250, height: 250}).toBuffer()
                 report.reportPicture = await buffer
                 
                 //trycatch labels scenarios??

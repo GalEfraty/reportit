@@ -5,12 +5,12 @@ sgMail.setApiKey(mailKey)
 
 const sendReportMail = (i_Report) =>
 {
-    // sgMail.send({
-    //     to: i_Report.reporterEmail,
-    //     from: 'reports@report.it',
-    //     subject: 'New report',
-    //     text: mailBody(i_Report),
-    // })
+    sgMail.send({
+        to: i_Report.reporterEmail,
+        from: 'reports@report.it',
+        subject: 'New report',
+        text: mailBody(i_Report),
+    })
 }
 
 const mailBody = (i_Report) => {
